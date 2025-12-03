@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Search, X } from 'lucide-react';
@@ -61,6 +60,11 @@ function App() {
 
   const getSerialNumber = (index) => (page - 1) * pageSize + index + 1;
 
+  const handleCompanyClick = (companyName) => {
+    setSelectedCompany(companyName);
+    setPage(1);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -110,7 +114,7 @@ function App() {
           {(search || selectedCompany) && (
             <button
               onClick={clearFilters}
-              className="px-8 py-4 bg-red-400 hover:bg-red-400 text-white font-medium rounded-xl transition"
+              className="px-8 py-4 bg-red-400 hover:bg-red-500 text-white font-medium rounded-xl transition"
             >
               Clear Filters
             </button>
@@ -118,6 +122,7 @@ function App() {
         </div>
       </div>
 
+      {/* Table */}
       <div className="max-w-7xl mx-auto px-6 pb-12">
         <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
           {loading ? (
@@ -157,8 +162,15 @@ function App() {
                             </div>
                           )}
                         </td>
-                        <td className="px-8 py-5 text-gray-700 max-w-xs truncate">
-                          {drug.company}
+                        <td className="px-8 py-5">
+                          <button
+                            onClick={() => handleCompanyClick(drug.company)}
+                            className={`font-medium transition-all hover:text-blue-600 hover:underline ${
+                              selectedCompany === drug.company ? 'text-blue-600 underline' : 'text-gray-700'
+                            }`}
+                          >
+                            {drug.company}
+                          </button>
                         </td>
                         <td className="px-8 py-5 text-gray-600">
                           {new Date(drug.launchDate).toLocaleDateString('en-GB', {
@@ -180,11 +192,6 @@ function App() {
                   onChange={(p) => setPage(p)}
                   showSizeChanger={false}
                   className="flex justify-center"
-                  itemRender={(page, type, originalElement) => {
-                    if (type === 'prev') return <button className="mx-1 px-4 py-2 rounded-lg bg-white border hover:bg-blue-50">Previous</button>;
-                    if (type === 'next') return <button className="mx-1 px-4 py-2 rounded-lg bg-white border hover:bg-blue-50">Next</button>;
-                    return originalElement;
-                  }}
                 />
               </div>
             </>
