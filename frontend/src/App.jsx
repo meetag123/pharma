@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { Search, X } from 'lucide-react';
-import { Pagination, Spin } from 'antd';
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { Search, X } from "lucide-react";
+import { Pagination, Spin } from "antd";
 
 function App() {
   const [drugs, setDrugs] = useState([]);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [selectedCompany, setSelectedCompany] = useState('');
+  const [search, setSearch] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState("");
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [pageSize] = useState(10);
@@ -20,11 +20,11 @@ function App() {
       if (search) params.search = search;
       if (selectedCompany) params.company = selectedCompany;
 
-      const res = await axios.get('http://localhost:5000/api', { params });
+      const res = await axios.get("http://localhost:5000/api", { params });
       setDrugs(res.data.data);
       setTotal(res.data.pagination.totalCount || 0);
     } catch (err) {
-      console.error('Failed to load drugs');
+      console.error("Failed to load drugs");
     } finally {
       setLoading(false);
     }
@@ -32,10 +32,10 @@ function App() {
 
   const fetchCompanies = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/companies');
-      setCompanies(['All Companies', ...res.data.data]);
+      const res = await axios.get("http://localhost:5000/api/companies");
+      setCompanies(["All Companies", ...res.data.data]);
     } catch (err) {
-      console.error('Failed to load companies');
+      console.error("Failed to load companies");
     }
   };
 
@@ -51,10 +51,10 @@ function App() {
     fetchDrugs();
   }, [page, search, selectedCompany]);
 
-  const clearSearch = () => setSearch('');
+  const clearSearch = () => setSearch("");
   const clearFilters = () => {
-    setSearch('');
-    setSelectedCompany('');
+    setSearch("");
+    setSelectedCompany("");
     setPage(1);
   };
 
@@ -74,38 +74,50 @@ function App() {
             <h1 className="text-3xl font-bold text-blue-600">PharmaDB</h1>
             <p className="text-gray-600">National Drug Database</p>
           </div>
-          <div className="text-sm text-gray-500">
-            {total} drugs found
-          </div>
+          <div className="text-sm text-gray-500">{total} drugs found</div>
         </div>
       </header>
 
       {/* Filters */}
       <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="flex flex-col md:flex-row gap-4 items-end">
-          <div className="relative flex-1 max-w-2xl">
-            <Search className="absolute left-4 top-4 w-5 h-5 text-gray-400" />
+        <div className="flex flex-col md:flex-row gap-6 items-center">
+          <div className="relative flex-shrink-0 w-full md:w-auto md:flex-1 md:max-w-2xl">
+            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400 pointer-events-none z-10" />
             <input
               type="text"
               placeholder="Search by NDC, name, or company..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-12 pr-12 py-4 text-lg border border-gray-300 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition"
+              className="w-full pl-14 pr-14 py-5 text-lg font-medium
+                   bg-white border-2 border-gray-300 rounded-2xl
+                   shadow-lg focus:shadow-xl
+                   focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100
+                   transition-all duration-300
+                   placeholder-gray-500
+                   min-w-0"
             />
             {search && (
-              <button onClick={clearSearch} className="absolute right-4 top-4 text-gray-400 hover:text-gray-600">
-                <X className="w-5 h-5" />
+              <button
+                onClick={clearSearch}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500 transition z-10"
+              >
+                <X className="w-6 h-6" />
               </button>
             )}
           </div>
 
           <select
             value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value || '')}
-            className="px-6 py-4 border border-gray-300 rounded-xl text-lg bg-white focus:outline-none focus:ring-4 focus:ring-blue-100"
+            onChange={(e) => setSelectedCompany(e.target.value || "")}
+            className="w-full md:w-80 px-6 py-5 text-lg bg-white border-2 border-gray-300 rounded-2xl 
+                 focus:outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-100 
+                 shadow-md hover:shadow-lg transition-all duration-300"
           >
             {companies.map((company) => (
-              <option key={company} value={company === 'All Companies' ? '' : company}>
+              <option
+                key={company}
+                value={company === "All Companies" ? "" : company}
+              >
                 {company}
               </option>
             ))}
@@ -131,27 +143,44 @@ function App() {
               <p className="mt-4 text-gray-600">Loading drugs...</p>
             </div>
           ) : drugs.length === 0 ? (
-            <div className="text-center py-20 text-gray-500 text-xl">No drugs found</div>
+            <div className="text-center py-20 text-gray-500 text-xl">
+              No drugs found
+            </div>
           ) : (
             <>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead className="bg-gradient-to-r from-blue-600 to-blue-700 text-white">
                     <tr>
-                      <th className="px-8 py-5 text-left font-semibold w-20">Id</th>
-                      <th className="px-8 py-5 text-left font-semibold">Code</th>
-                      <th className="px-8 py-5 text-left font-semibold">Name</th>
-                      <th className="px-8 py-5 text-left font-semibold">Company</th>
-                      <th className="px-8 py-5 text-left font-semibold">Launch Date</th>
+                      <th className="px-8 py-5 text-left font-semibold w-20">
+                        Id
+                      </th>
+                      <th className="px-8 py-5 text-left font-semibold">
+                        Code
+                      </th>
+                      <th className="px-8 py-5 text-left font-semibold">
+                        Name
+                      </th>
+                      <th className="px-8 py-5 text-left font-semibold">
+                        Company
+                      </th>
+                      <th className="px-8 py-5 text-left font-semibold">
+                        Launch Date
+                      </th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200">
                     {drugs.map((drug, index) => (
-                      <tr key={drug.code} className="hover:bg-blue-50 transition">
+                      <tr
+                        key={drug.code}
+                        className="hover:bg-blue-50 transition"
+                      >
                         <td className="px-8 py-5 text-center font-medium text-gray-700">
                           {getSerialNumber(index)}
                         </td>
-                        <td className="px-8 py-5 font-mono text-sm text-gray-700">{drug.code}</td>
+                        <td className="px-8 py-5 font-mono text-sm text-gray-700">
+                          {drug.code}
+                        </td>
                         <td className="px-8 py-5 max-w-md">
                           <div className="font-semibold text-gray-900 break-words">
                             {drug.genericName}
@@ -166,18 +195,22 @@ function App() {
                           <button
                             onClick={() => handleCompanyClick(drug.company)}
                             className={`font-medium transition-all hover:text-blue-600 hover:underline ${
-                              selectedCompany === drug.company ? 'text-blue-600 underline' : 'text-gray-700'
+                              selectedCompany === drug.company
+                                ? "text-blue-600 underline"
+                                : "text-gray-700"
                             }`}
                           >
                             {drug.company}
                           </button>
                         </td>
                         <td className="px-8 py-5 text-gray-600">
-                          {new Date(drug.launchDate).toLocaleDateString('en-GB', {
-                            day: '2-digit',
-                            month: '2-digit',
-                            year: 'numeric'
-                          }).replace(/\//g, '.')}
+                          {new Date(drug.launchDate)
+                            .toLocaleDateString("en-GB", {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                            })
+                            .replace(/\//g, ".")}
                         </td>
                       </tr>
                     ))}
