@@ -18,7 +18,6 @@ async function importDrugs() {
 
     if (!Array.isArray(drugs)) throw new Error('JSON must be an array');
 
-    console.log(`Loaded ${drugs.length} drugs`);
 
     await Drug.deleteMany({});
     console.log('Old data cleared');
@@ -30,8 +29,7 @@ async function importDrugs() {
 
     await Drug.insertMany(cleanDrugs);
 
-    console.log(`SUCCESS! ${cleanDrugs.length} drugs imported`);
-    console.log('You can now delete drugData.json and this script');
+    console.log(`SUCCESS! ${cleanDrugs.length} `);
 
     mongoose.connection.close();
   } catch (err) {

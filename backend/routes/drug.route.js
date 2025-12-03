@@ -1,4 +1,4 @@
-// routes/drugRoutes.js
+
 const express = require('express');
 const router = express.Router();
 const { getAllDrugs, getAllCompanies } = require('../controller/drug.controller');

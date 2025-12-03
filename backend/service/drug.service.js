@@ -1,12 +1,10 @@
-// services/drugService.js
+
 const Drug = require('../model/drug.model');
 
 const getAllDrugs = async (options = {}) => {
   const { page = 1, limit = 30, search = '' ,company=''} = options;
   const skip = (page - 1) * limit;
-
   let query = {};
-
   if (search && search.trim()) {
     const searchRegex = new RegExp(search.trim(), 'i');
     query.$or = [
@@ -21,7 +19,6 @@ const getAllDrugs = async (options = {}) => {
   }
 
   const totalCount = await Drug.countDocuments(query);
-
   const drugs = await Drug.find(query)
     .select('code genericName brandName company launchDate')
     .sort({ launchDate: -1 })

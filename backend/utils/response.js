@@ -1,4 +1,4 @@
-// utils/response.js
+
 const successResponse = (res, data, message = "Success", statusCode = 200, meta = {}) => {
   res.status(statusCode).json({
     success: true,
